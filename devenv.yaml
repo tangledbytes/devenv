@@ -1,0 +1,89 @@
+vmType: "vz"
+rosetta:
+  enabled: true
+  binfmt: true
+
+cpus: 10
+memory: 32G
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
+    arch: "x86_64"
+  - location: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+mounts:
+  - location: "~"
+  - location: "/tmp/lima"
+    writable: true
+mountType: "virtiofs"
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      export DEBIAN_FRONTEND=noninteractive
+
+      # Install and setup required programs
+      apt update
+      apt install -y neovim vim stow tmux build-essential git fzf ripgrep zsh sqlite3 fd-find
+  - mode: user
+    script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      export DEBIAN_FRONTEND=noninteractive
+
+      # Utility functions ========================
+      function get_arch() {
+        if [[ $(uname -m) == "x86_64" ]]; then
+          echo "amd64"
+        elif [[ $(uname -m) == "aarch64" ]]; then
+          echo "arm64"
+        else
+          echo "unknown"
+        fi
+      }
+      # ==========================================
+
+      # Make ZSH default shell for this user
+      sudo chsh -s $(which zsh) $(whoami)
+
+      # Setup ssh config inside the VM
+      cp -rp #{{HOST_HOME}}/.ssh/* ~/.ssh
+
+      rm ~/.zshrc
+
+      # Setup a dev directory
+      mkdir ~/dev
+
+      # Setup the dotfiles
+      pushd ~/dev
+      git clone git@github.com:utkarsh-pro/dotfiles.git
+      pushd dotfiles
+      stow -t ~ nvim
+      stow -t ~ zsh
+      popd
+      popd
+
+      # Install starship 
+      curl -fsSL https://starship.rs/install.sh | sh -s -- -y
+
+      # Install rust - latest
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+      # Install golang - golang 1.20
+      pushd /tmp
+      wget https://go.dev/dl/go1.20.linux-$(get_arch).tar.gz
+      sudo tar -C /usr/local -xzf go1.20.linux-$(get_arch).tar.gz
+      echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.local/share/zsh/custom/pre/1st.zsh
+      popd
+
+      # Install nodejs - latest
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+networks:
+  - vzNAT: true
+
+ssh:
+  localPort: 2322
