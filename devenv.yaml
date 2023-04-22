@@ -3,8 +3,8 @@ rosetta:
   enabled: true
   binfmt: true
 
-cpus: 10
-memory: 32G
+cpus: 2
+memory: 2G
 
 images:
   - location: "https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img"
