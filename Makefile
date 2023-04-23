@@ -16,12 +16,12 @@ clean: stop
 .PHONY: build
 build:
 	@echo "Building the environment..."
-	devcontainer build --workspace-folder builder --image-name ghcr.io/utkarsh-pro/devenv:0.1 $(ARGS)
+	devcontainer build --workspace-folder builder --image-name ghcr.io/utkarsh-pro/devenv:latest $(ARGS)
 
 .PHONY: build-push
 build-push:
 	@echo "Building & Pushing the development environment..."
-	devcontainer build --workspace-folder builder --image-name ghcr.io/utkarsh-pro/devenv:0.1 --platform linux/amd64,linux/arm64 --push $(ARGS)
+	devcontainer build --workspace-folder builder --image-name ghcr.io/utkarsh-pro/devenv:latest --platform linux/amd64,linux/arm64 --push $(ARGS)
 
 .PHONY: alias
 alias:
