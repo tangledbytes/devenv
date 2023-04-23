@@ -1,7 +1,5 @@
 #!/bin/bash
 
-su - utkarsh
-
 export DEBIAN_FRONTEND=noninteractive
 sudo apt update
 sudo apt install -y build-essential stow git fzf ripgrep sqlite3 fd-find

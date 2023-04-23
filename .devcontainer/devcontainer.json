@@ -29,7 +29,7 @@
 			"profile": "complete"
 		},
 		"ghcr.io/devcontainers-contrib/features/bash-command:1": {
-			"command": "curl -o /tmp/devenv-init.sh https://raw.githubusercontent.com/utkarsh-pro/devenv/master/init.sh && chmod +x /tmp/devenv-init.sh && /tmp/devenv-init.sh"
+			"command": "su - utkarsh -c \"curl -o /tmp/devenv-init.sh https://raw.githubusercontent.com/utkarsh-pro/devenv/master/init.sh && chmod +x /tmp/devenv-init.sh && /tmp/devenv-init.sh\""
 		}
 	},
 
