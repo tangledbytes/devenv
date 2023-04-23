@@ -4,5 +4,9 @@
 	"runArgs": [
 		"--name",
 		"devenv"
+	],
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/utkarsh/.ssh,type=bind",
+		"source=${localEnv:HOME}/dev,target=/home/utkarsh/dev,type=bind"
 	]
 }

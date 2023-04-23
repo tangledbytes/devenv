@@ -1,7 +1,7 @@
 .PHONY: start
 start:
 	@echo "Starting the environment..."
-	devcontainer up --workspace-folder runner
+	devcontainer up --workspace-folder runner $(ARGS)
 
 .PHONY: stop
 stop:

@@ -18,5 +18,5 @@ popd
 curl -fsSL https://starship.rs/install.sh | sh -s -- -y
 cat<<EOF >> ~/.config/starship.toml
 [container]
-format = '[$symbol](bold green dimmed) '
+format = '[\$symbol](bold green dimmed) '
 EOF
