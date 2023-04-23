@@ -1,6 +1,6 @@
 {
 	"name": "Devenv",
-	"image": "utkarsh23/devenv:latest",
+	"image": "ghcr.io/utkarsh-pro/devenv:0.1",
 	"runArgs": [
 		"--name",
 		"devenv"
