@@ -1,10 +1,19 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
 	"name": "Ubuntu",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
 	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZSH": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": false,
+			"username": "utkarsh",
+			"userUid": 1000,
+			"userGid": 1000,
+			"nonFreePackages": true
+		},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {
 			"moby": true,
 			"azureDnsAutoDetection": true,
@@ -19,22 +28,18 @@
 			"version": "latest",
 			"profile": "complete"
 		},
-		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers-contrib/features/bash-command:1": {
-			"command": "chmod +x /workspace/devenv/init.sh && /workspace/devenv/init.sh"
+			"command": "curl -o /tmp/devenv-init.sh https://raw.githubusercontent.com/utkarsh-pro/devenv/master/init.sh && chmod +x /tmp/devenv-init.sh && /tmp/devenv-init.sh"
 		}
+	},
+
+	"containerUser": "utkarsh",
+	"remoteUser": "utkarsh",
+	"containerEnv": {
+		"TERM": "xterm-256color"
 	}
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
 }
 
