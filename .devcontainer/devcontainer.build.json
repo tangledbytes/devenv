@@ -1,0 +1,41 @@
+{
+	"name": "Devenv",
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZSH": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": false,
+			"username": "utkarsh",
+			"userUid": 1000,
+			"userGid": 1000,
+			"nonFreePackages": true
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"moby": true,
+			"azureDnsAutoDetection": true,
+			"installDockerBuildx": true,
+			"version": "latest",
+			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/go:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "latest",
+			"profile": "complete"
+		},
+		"ghcr.io/devcontainers-contrib/features/bash-command:1": {
+			"command": "sudo -H -u utkarsh bash -c 'curl -o /tmp/devenv-init.sh https://raw.githubusercontent.com/utkarsh-pro/devenv/master/init.sh && chmod +x /tmp/devenv-init.sh && /tmp/devenv-init.sh'"
+		}
+	},
+	"containerUser": "utkarsh",
+	"remoteUser": "utkarsh",
+	"containerEnv": {
+		"TERM": "xterm-256color",
+		"SHELL": "/usr/bin/zsh"
+	}
+}
