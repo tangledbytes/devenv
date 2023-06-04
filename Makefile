@@ -50,9 +50,9 @@ vm-clean: vm-stop
 
 .PHONY: vm-alias
 vm-alias:
-	@echo "Adding dssh alias..."
+	@echo "Adding vdssh alias..."
 	@if ! grep -q "alias vdssh=" ~/.zshrc; then \
-		echo "alias vdssh='limactl shell --workdir ~ devenv'" >> ~/.zshrc; \
+		echo "alias vdssh='limactl shell --workdir /home/${USER}.linux devenv'" >> ~/.zshrc; \
 	fi
 
 .PHONY: vm-ssh

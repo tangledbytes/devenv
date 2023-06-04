@@ -55,7 +55,9 @@ provision:
       # Setup the dotfiles if the ~/dev/dotfiles directory exists
       if [[ -d ~/dev/dotfiles ]]; then
         echo "Setting up dotfiles"
-        pushd ~/dev/dotfiles
+        # Create a copy of dotfiles so that symlinking doesn't break anything on host
+        cp -r ~/dev/dotfiles ~/.dotfiles
+        pushd ~/.dotfiles
         make setup
         popd
       fi
