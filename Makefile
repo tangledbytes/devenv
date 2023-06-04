@@ -38,6 +38,12 @@ vm-start:
 	@limactl stop devenv
 	@limactl start devenv
 
+.PHOINY: vm-restart
+vm-restart:
+	@echo "Restarting the VM environment..."
+	@limactl stop devenv
+	@limactl start devenv
+
 .PHONY: vm-stop
 vm-stop:
 	@echo "Stopping the VM environment..."
