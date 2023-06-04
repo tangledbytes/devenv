@@ -1,0 +1,68 @@
+vmType: vz
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/23.04/release/ubuntu-23.04-server-cloudimg-amd64.img"
+    arch: "x86_64"
+  - location: "https://cloud-images.ubuntu.com/releases/23.04/release/ubuntu-23.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+cpus: null
+memory: null
+disk: null
+
+mounts:
+  - location: "#{{HOME}}/dev"
+    mountPoint: "/home/#{{USER}}.linux/dev"
+    writable: true
+  - location: "#{{HOME}}/.ssh"
+    mountPoint: "/home/#{{USER}}.linux/.ssh"
+    writable: true
+  - location: "/tmp/lima"
+    writable: true
+mountType: virtiofs
+
+ssh:
+  localPort: 2322
+
+containerd:
+  system: false
+  user: false
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      # SETUP SYSTEM
+      set -eux -o pipefail
+      export DEBIAN_FRONTEND=noninteractive
+
+      # Install and setup required programs
+      apt update
+      apt install -y vim stow tmux build-essential git fzf ripgrep zsh sqlite3 fd-find ninja-build gettext cmake unzip curl
+  - mode: user
+    script: |
+      #!/bin/bash
+      # SETUP ZSH
+      set -eux -o pipefail
+
+      # Make ZSH default shell for this user
+      sudo chsh -s $(which zsh) $(whoami)
+
+      # Prepare the home directory
+      sudo rm -rf ~/.zshrc
+      sudo chown $(whoami): ~
+      mkdir -p ~/bin
+
+      # Setup the dotfiles if the ~/dev/dotfiles directory exists
+      if [[ -d ~/dev/dotfiles ]]; then
+        echo "Setting up dotfiles"
+        pushd ~/dev/dotfiles
+        make setup
+        popd
+      fi
+
+      # Install starship 
+      curl -fsSL https://starship.rs/install.sh | sh -s -- -y
+
+rosetta:
+  enabled: true
+  binfmt: true

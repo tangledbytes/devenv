@@ -29,3 +29,33 @@ alias:
 	@if ! grep -q "alias dssh=" ~/.zshrc; then \
 		echo "alias dssh='docker exec -it -u utkarsh -w /home/utkarsh devenv zsh'" >> ~/.zshrc; \
 	fi
+
+.PHONY: vm-start
+vm-start:
+	@echo "Starting the VM environment..."
+	@sed 's/#{{/$${/g; s/}}/}/g' ./vm/devenv.yml | envsubst | sed 's/$${/#{{/g; s/}/}}/g' | limactl start --name devenv $(ARGS) -
+	@echo "Restarting the VM environment..."
+	@limactl stop devenv
+	@limactl start devenv
+
+.PHONY: vm-stop
+vm-stop:
+	@echo "Stopping the VM environment..."
+	@limactl stop devenv
+
+.PHONY: vm-clean
+vm-clean: vm-stop
+	@echo "Cleaning the VM environment..."
+	@limactl delete devenv
+
+.PHONY: vm-alias
+vm-alias:
+	@echo "Adding dssh alias..."
+	@if ! grep -q "alias vdssh=" ~/.zshrc; then \
+		echo "alias vdssh='limactl shell --workdir ~ devenv'" >> ~/.zshrc; \
+	fi
+
+.PHONY: vm-ssh
+vm-ssh:
+	@echo "SSHing into the VM environment..."
+	@limactl shell --workdir /home/${USER}.linux devenv
