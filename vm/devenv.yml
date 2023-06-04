@@ -1,4 +1,4 @@
-vmType: vz
+vmType: qemu
 images:
   - location: "https://cloud-images.ubuntu.com/releases/23.04/release/ubuntu-23.04-server-cloudimg-amd64.img"
     arch: "x86_64"
@@ -18,7 +18,7 @@ mounts:
     writable: true
   - location: "/tmp/lima"
     writable: true
-mountType: virtiofs
+mountType: 9p
 
 ssh:
   localPort: 2322

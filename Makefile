@@ -65,3 +65,10 @@ vm-alias:
 vm-ssh:
 	@echo "SSHing into the VM environment..."
 	@limactl shell --workdir /home/${USER}.linux devenv
+
+.PHONY: vm-vscode-alias
+vm-vscode-alias:
+	@echo "Adding VSCode alias in the VM environment..."
+	@if ! grep -q "alias vmc=" ~/.zshrc; then \
+		echo "alias vmc='code --remote ssh-remote+localhost'" >> ~/.zshrc; \
+	fi
