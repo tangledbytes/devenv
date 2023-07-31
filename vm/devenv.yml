@@ -1,9 +1,11 @@
 vmType: qemu
 images:
-  - location: "https://cloud-images.ubuntu.com/releases/23.04/release/ubuntu-23.04-server-cloudimg-amd64.img"
-    arch: "x86_64"
-  - location: "https://cloud-images.ubuntu.com/releases/23.04/release/ubuntu-23.04-server-cloudimg-arm64.img"
-    arch: "aarch64"
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2"
+  arch: "x86_64"
+  digest: "sha256:d334670401ff3d5b4129fcc662cf64f5a6e568228af59076cc449a4945318482"
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/aarch64/images/Fedora-Cloud-Base-38-1.6.aarch64.qcow2"
+  arch: "aarch64"
+  digest: "sha256:ad71d22104a16e4f9efa93e61e8c7bce28de693f59c802586abbe85e9db55a65"
 
 cpus: null
 memory: null
@@ -12,9 +14,6 @@ disk: null
 mounts:
   - location: "#{{HOME}}/dev"
     mountPoint: "/home/#{{USER}}.linux/dev"
-    writable: true
-  - location: "#{{HOME}}/.ssh"
-    mountPoint: "/home/#{{USER}}.linux/.ssh"
     writable: true
   - location: "/tmp/lima"
     writable: true
@@ -33,11 +32,11 @@ provision:
       #!/bin/bash
       # SETUP SYSTEM
       set -eux -o pipefail
-      export DEBIAN_FRONTEND=noninteractive
 
       # Install and setup required programs
-      apt update
-      apt install -y vim stow tmux build-essential git fzf ripgrep zsh sqlite3 fd-find ninja-build gettext cmake unzip curl
+      dnf update -y
+      dnf groupinstall -y "Development Tools" "Development Libraries"
+      dnf install -y vim stow tmux git fzf ripgrep zsh sqlite3 fd-find ninja-build gettext cmake unzip curl util-linux-user
   - mode: user
     script: |
       #!/bin/bash
@@ -51,20 +50,18 @@ provision:
       sudo rm -rf ~/.zshrc
       sudo chown $(whoami): ~
       mkdir -p ~/bin
+      mkdir -p ~/.local/share
 
       # Setup the dotfiles if the ~/dev/dotfiles directory exists
+      echo "Setting up dotfiles"
       if [[ -d ~/dev/dotfiles ]]; then
-        echo "Setting up dotfiles"
         # Create a copy of dotfiles so that symlinking doesn't break anything on host
         cp -r ~/dev/dotfiles ~/.dotfiles
-        pushd ~/.dotfiles
-        make setup
-        popd
       fi
+      pushd ~/.dotfiles
+      make setup
+      popd
 
       # Install starship 
       curl -fsSL https://starship.rs/install.sh | sh -s -- -y
 
-rosetta:
-  enabled: true
-  binfmt: true
