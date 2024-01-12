@@ -1,11 +1,9 @@
-vmType: qemu
+vmType: vz
 images:
-- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2"
-  arch: "x86_64"
-  digest: "sha256:d334670401ff3d5b4129fcc662cf64f5a6e568228af59076cc449a4945318482"
-- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/aarch64/images/Fedora-Cloud-Base-38-1.6.aarch64.qcow2"
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/aarch64/images/Fedora-Cloud-Base-39-1.5.aarch64.qcow2"
   arch: "aarch64"
-  digest: "sha256:ad71d22104a16e4f9efa93e61e8c7bce28de693f59c802586abbe85e9db55a65"
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2"
+  arch: "x86_64"
 
 cpus: null
 memory: null
@@ -17,7 +15,7 @@ mounts:
     writable: true
   - location: "/tmp/lima"
     writable: true
-mountType: 9p
+mountType: virtiofs
 
 ssh:
   localPort: 2322
@@ -55,13 +53,16 @@ provision:
       # Setup the dotfiles if the ~/dev/dotfiles directory exists
       echo "Setting up dotfiles"
       if [[ -d ~/dev/dotfiles ]]; then
-        # Create a copy of dotfiles so that symlinking doesn't break anything on host
-        cp -r ~/dev/dotfiles ~/.dotfiles
+        if [[ ! -d ~/.dotfiles ]]; then
+          \cp -r ~/dev/dotfiles ~/.dotfiles
+        fi
       fi
       pushd ~/.dotfiles
       make setup
       popd
 
-      # Install starship 
-      curl -fsSL https://starship.rs/install.sh | sh -s -- -y
-
+      # Install starship
+      if ! command -v starship &> /dev/null
+      then
+        curl -fsSL https://starship.rs/install.sh | sh -s -- -y
+      fi
